@@ -1,0 +1,68 @@
+<h1 class="d-flex display-4 justify-content-center">Hamburger Menu</h1>
+<img class="img-fluid img-center" src="./assets/img/hamburger-1294647_960_720.png" alt="Hamburger Source: https://pixabay.com/en/hamburger-food-fast-food-snack-1294647/">
+
+<div class="row mb-2">
+  <div class="col-xs-12 col-sm-5">
+    <h2 class="d-flex display-5 justify-content-center">Burger List</h2>
+    <section class="row">
+      <table class="col-xs-12 col-sm-12 burger-tbl mb-1">
+      {{#each burgers}}
+        {{#unless devoured}}
+          {{> burgers/burger-block devoured=true}}
+        {{/unless}}
+      {{/each}}
+      </table>
+    </section>
+  </div>
+
+  <div class="col-xs-12 offset-sm-2 col-sm-5">
+    <h2 class="d-flex display-5 justify-content-center">Devoured</h2>
+    <section class="row">
+      <table class="col-xs-12 col-sm-12 burger-tbl devoured-tbl mb-1">
+        {{#each burgers}}
+          {{#if devoured}}
+            {{> burgers/burger-block devoured=false}}
+          {{/if}}
+        {{/each}}
+      </table>
+    </section>
+  </div>
+
+</div>
+
+<div class="row">
+  <section class="col-xs-12 col-sm-6">
+    <h2>Add a Burger</h2>
+    <form class="create-form">
+
+      <div class="form-group">
+        <label for="bu">Enter Burger Name:</label>
+        <input type="text" id="bu" name="name">
+      </div>
+
+      <p class="text-large">- OR -</p>
+
+      <div class="form-group">
+        <select class="opt-selected">
+          <option class="placeholder-option" selected="selected" value="placeholder" disabled selected>Select from burger list</option>
+          {{#each burgerOptions}}
+            <option value="{{burgerType}}"><strong>{{burgerType}}</strong></option>
+          {{/each}}
+        </select>
+      </div>
+
+      <div id="form-end" class="mb-2">
+        <div id="burger-error"></div>
+        <button type="submit" class="burger-button add-burger" id="add-bu-btn">Add Burger</button>
+      </div>
+    </form>
+
+  </section>
+
+  <section class="col-xs-12 offet-sm-1 col-sm-4 mb-2">
+    <button id="toggle-another" data-toggle="enabled" class="burger-button toggle-btn">Enable/Disable Repeats</button>
+  </section>
+
+</div>
+
+

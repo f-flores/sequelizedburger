@@ -1,0 +1,13 @@
+	<tr>
+		<td>{{id}}. {{burger_name}}</td>
+
+		<td>
+			<button class="change-devoured burger-button" data-id="{{id}}" data-newdevour="{{devoured}}">
+				{{#if devoured}}Devour{{else}}Another?{{/if}}
+			</button>
+		</td>
+
+		<td>
+			<button class="delete-burger burger-button" data-id="{{this.id}}">&times;</button>
+		</td>
+	</tr>

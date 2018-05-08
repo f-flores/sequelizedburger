@@ -1,0 +1,14 @@
+node_modules
+*.env
+.env
+.vscode
+.DS_Store
+*.log
+*.error
+dist
+.webpack
+.eslintrc.json
+style.scss
+gulpfile.js
+app/public/css/style.scss
+public/assets/css/burger_style.scss
