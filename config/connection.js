@@ -5,10 +5,10 @@
 //
 // ================================================================================
 
-var mysql = require("mysql");
+var mysql = require("mysql2");
 var connection;
 
-require("dotenv").config();
+// require("dotenv").config();
 
 if (process.env.JAWSDB_URL) {
   connection = mysql.createConnection(process.env.JAWSDB_URL);
