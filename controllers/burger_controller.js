@@ -12,46 +12,53 @@ var express = require("express");
 var router = express.Router();
 
 // Import the model (burger.js) to use its database functions.
-var burger = require("../models/burger.js");
+// var burger = require("../models/burger.js");
+
+// Requiring our Todo model
+var db = require("../models");
 
 // import burgerOptions for hamburger list
-const burgerOptions = require("../models/burger_options.js");
+const burgerOptions = require("../appdata/burger_options.js");
 
 // burger route handlers
 // get all burgers
 router.get("/", function(req, res) {
-  burger.all(function(data) {
+  db.Burger.findAll({}).
+  then(function(burgerData) {
     var hbsObject = {
-      "burgers": data,
+      "burgers": burgerData,
       burgerOptions
     };
 
-    console.log(hbsObject);
+    console.log("hbs burgers: " + JSON.stringify(hbsObject.burgers));
+
     res.render("index", hbsObject);
- });
+  });
+});
+
+// api get
+router.get("/api/burgers", function(req, res) {
+  db.Burger.findAll({}).
+  then(function(burgerData) {
+    res.json(burgerData);
+  });
 });
 
 // post or insert
 router.post("/api/burgers", function(req, res) {
-  var condition = "burger_name = '" + req.body.burger_name + "'";
+  // var condition = "burger_name = '" + req.body.burger_name + "'";
 
-  burger.confirm(condition, function(data) {
-    console.log("burger.confirm duplicate data if length >= 1: " + data.length);
+  db.Burger.findAll({"where": {"burger_name": req.body.burger_name}}).
+  then(function(data) {
+    console.log(data);
     if (data.length >= 1) {
-      // on duplicate entry, simply exit with successful status code
+      // duplicate, return status 200 without adding burger name to db
       res.status(200).end();
     } else {
-    // otherwise burger is added to burger_db
-      burger.create(
-        ["burger_name", "devoured"],
-        [req.body.burger_name, req.body.devoured], function(result) {
-        // Send back the ID of the new burger
-        res.json({"id": result.insertId});
-      }
-      );
+      db.Burger.create(req.body).then(function(burgerData) {
+        res.json(burgerData);
+      });
     }
-
-    return true;
   });
 
 });
@@ -60,13 +67,19 @@ router.post("/api/burgers", function(req, res) {
 router.put("/api/burgers/:id", function(req, res) {
   var condition = "id = " + req.params.id;
 
-  console.log("condition", condition);
+  console.log("in put update, condition", condition);
 
-  burger.update({"devoured": req.body.devoured}, condition, function(result) {
-    if (result.changedRows === 0) {
-      // If no rows were changed, ID must not exist, return 404
-      return res.status(404).end();
-    }
+  db.Burger.update(
+    req.body,
+    {"where": {"id": req.params.id}}
+    ).
+    then(function(dbBurger) {
+      console.log("in update dbburger: " + JSON.stringify(dbBurger));
+      if (dbBurger.length === 0) {
+        // return 404 if no rows were changed, this means id does not exist
+        return res.status(404).end();
+      }
+    // res.json(dbBurger);
     res.status(200).end();
 
     return true;
@@ -77,24 +90,20 @@ router.put("/api/burgers/:id", function(req, res) {
 router.delete("/api/burgers/:id", function(req, res) {
   var condition = "id = " + req.params.id;
 
-  burger.delete(condition, function(result) {
-    if (result.affectedRows === 0) {
-      // If no rows were changed, then the ID must not exist, so 404
+  db.Burger.destroy({"where": {"id": req.params.id}}).
+  then(function(dbBurger) {
+    if (dbBurger.affectedRows === 0) {
+      // return 404 if no rows were changed, this means id does not exist
       return res.status(404).end();
     }
+    // res.json(dbPost);
     res.status(200).end();
 
     return true;
   });
+
 });
 
-router.get("/api/burgers", function(req, res) {
-  burger.all(function(data) {
-    var hbsObject = {"burgers": data};
-
-    res.json(hbsObject);
- });
-});
 
 // Export routes for server.js to use.
 module.exports = router;

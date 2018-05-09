@@ -12,6 +12,9 @@ var expresshbs = require("express-handlebars");
 var bodyParser = require("body-parser");
 
 var PORT = process.env.PORT || 3000;
+
+// Requiring models for syncing
+var db = require("./models");
 var app = express();
 var routes;
 
@@ -37,8 +40,10 @@ routes = require("./controllers/burger_controller.js");
 
 app.use(routes);
 
-// launch server listener for client requests
-app.listen(PORT, () => {
-  // server-side log when server has started
-  console.log("Server listening on: http://localhost:" + PORT);
+db.sequelize.sync(/* {"force": true} */).then(function() {
+  // launch server listener for client requests
+  app.listen(PORT, () => {
+    // server-side log when server has started
+    console.log("Server listening on: http://localhost:" + PORT);
+  });
 });

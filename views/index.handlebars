@@ -8,7 +8,7 @@
       <table class="col-xs-12 col-sm-12 burger-tbl mb-1">
       {{#each burgers}}
         {{#unless devoured}}
-          {{> burgers/burger-block devoured=true}}
+          {{> burgers/burger-block id=this.id burger_name=this.burger_name devoured=true}}
         {{/unless}}
       {{/each}}
       </table>
@@ -21,7 +21,7 @@
       <table class="col-xs-12 col-sm-12 burger-tbl devoured-tbl mb-1">
         {{#each burgers}}
           {{#if devoured}}
-            {{> burgers/burger-block devoured=false}}
+            {{> burgers/burger-block id=this.id burger_name=this.burger_name devoured=false}}
           {{/if}}
         {{/each}}
       </table>
